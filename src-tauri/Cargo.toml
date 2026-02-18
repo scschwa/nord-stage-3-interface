@@ -1,0 +1,25 @@
+[package]
+name = "nord-stage-3-interface"
+version = "0.1.0"
+description = "Nord Stage 3 Interface - MIDI visualizer, sheet music, and AI sound design"
+authors = ["you"]
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+# The `_lib` suffix may seem redundant but it is necessary
+# to make the lib name unique and wouldn't conflict with the bin name.
+# This seems to be only an issue on Windows: https://github.com/rust-lang/cargo/issues/8519
+name = "nord_stage_3_interface_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+tauri-plugin-opener = "2"
+tauri-plugin-midi = "0.1"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"

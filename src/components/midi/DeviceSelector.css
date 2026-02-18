@@ -1,0 +1,61 @@
+.device-selector {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.status-dot.connected {
+  background: #4caf50;
+  box-shadow: 0 0 6px #4caf50;
+}
+
+.status-dot.disconnected {
+  background: #555;
+}
+
+.port-name {
+  font-size: 13px;
+  color: #e0e0e0;
+  font-weight: 500;
+}
+
+.no-device {
+  font-size: 13px;
+  color: #888;
+}
+
+.port-select {
+  background: #2a2a2a;
+  border: 1px solid #444;
+  color: #e0e0e0;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.port-select:focus {
+  outline: 1px solid #c8102e;
+}
+
+.disconnect-btn {
+  background: transparent;
+  border: 1px solid #555;
+  color: #aaa;
+  padding: 3px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.disconnect-btn:hover {
+  border-color: #c8102e;
+  color: #e0e0e0;
+}

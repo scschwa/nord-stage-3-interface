@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:www.manualslib.com)",
+      "Bash(git -C /c/Users/svenftw/OneDrive/nord-stage-3-interface log --oneline -20)",
+      "Bash(rustc --version:*)",
+      "Bash(cargo --version:*)",
+      "Bash(winget --version:*)",
+      "Bash(winget install:*)",
+      "Bash(source:*)",
+      "Bash(export PATH=\"$HOME/.cargo/bin:$PATH\")",
+      "Bash(npm create:*)",
+      "Bash(cmd /c:*)",
+      "Bash(powershell -Command:*)"
+    ]
+  }
+}

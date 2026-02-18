@@ -1,0 +1,64 @@
+.midi-monitor {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #111;
+  border-radius: 6px;
+  overflow: hidden;
+  font-family: "Consolas", "Monaco", monospace;
+}
+
+.monitor-header {
+  padding: 8px 12px;
+  background: #1a1a1a;
+  font-size: 11px;
+  font-weight: 600;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid #2a2a2a;
+}
+
+.monitor-log {
+  flex: 1;
+  overflow-y: auto;
+  padding: 4px 0;
+  scrollbar-width: thin;
+  scrollbar-color: #333 transparent;
+}
+
+.event-row {
+  display: flex;
+  gap: 8px;
+  padding: 2px 12px;
+  font-size: 11px;
+  line-height: 1.6;
+  align-items: center;
+}
+
+.event-row:hover {
+  background: #1a1a1a;
+}
+
+.event-type {
+  width: 100px;
+  flex-shrink: 0;
+  font-weight: 600;
+}
+
+.event-noteOn .event-type { color: #4fc3f7; }
+.event-noteOff .event-type { color: #546e7a; }
+.event-controlChange .event-type { color: #aed581; }
+.event-programChange .event-type { color: #ffb74d; }
+.event-pitchBend .event-type { color: #ce93d8; }
+.event-channelPressure .event-type { color: #f48fb1; }
+
+.event-detail {
+  flex: 1;
+  color: #ccc;
+}
+
+.event-ch {
+  color: #555;
+  font-size: 10px;
+}

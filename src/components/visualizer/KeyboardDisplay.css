@@ -1,0 +1,45 @@
+.keyboard-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.chord-display {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  min-height: 36px;
+}
+
+.chord-name {
+  font-size: 28px;
+  font-weight: 700;
+  color: #4fc3f7;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.chord-quality {
+  font-size: 13px;
+  color: #888;
+  font-style: italic;
+}
+
+.keyboard-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+  width: 100%;
+  scrollbar-width: thin;
+  scrollbar-color: #333 transparent;
+}
+
+.keyboard-svg {
+  display: block;
+  margin: 0 auto;
+}
+
+.white-key, .black-key {
+  transition: fill 30ms ease-out;
+}
