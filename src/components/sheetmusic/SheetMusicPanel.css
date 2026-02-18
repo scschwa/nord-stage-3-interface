@@ -1,35 +1,94 @@
-.panel-placeholder {
+.sheet-music-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #111;
+}
+
+.sheet-music-content {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  position: relative;
+}
+
+/* OSMD render container */
+.osmd-container {
+  padding: 24px;
+  background: #fff;
+  min-height: 100%;
+}
+
+.osmd-container.hidden {
+  display: none;
+}
+
+/* Print: hide everything except the score */
+@media print {
+  .capture-controls,
+  .sheet-placeholder {
+    display: none !important;
+  }
+  .osmd-container {
+    display: block !important;
+    padding: 0;
+  }
+}
+
+/* Placeholder states */
+.sheet-placeholder {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   height: 100%;
-  gap: 12px;
+  min-height: 300px;
+  gap: 10px;
   color: #555;
   text-align: center;
   padding: 40px;
 }
 
-.placeholder-icon {
-  font-size: 48px;
-  opacity: 0.3;
-}
-
-.panel-placeholder h2 {
-  font-size: 20px;
-  font-weight: 600;
+.sheet-placeholder p {
+  margin: 0;
+  font-size: 15px;
   color: #888;
-  margin: 0;
 }
 
-.panel-placeholder p {
-  margin: 0;
-  font-size: 14px;
-  max-width: 320px;
-  line-height: 1.6;
+.sheet-placeholder p strong {
+  color: #e0e0e0;
 }
 
-.placeholder-detail {
-  color: #444 !important;
+.placeholder-sub {
   font-size: 13px !important;
+  color: #555 !important;
+}
+
+.sheet-placeholder.recording p {
+  color: #e0e0e0;
+}
+
+.sheet-placeholder.error .placeholder-icon {
+  color: #ff8a80;
+}
+
+.sheet-placeholder.error p {
+  color: #ff8a80;
+}
+
+.placeholder-icon {
+  font-size: 40px;
+  opacity: 0.4;
+  line-height: 1;
+}
+
+.placeholder-icon.pulse {
+  opacity: 1;
+  color: #ff1744;
+  animation: pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.95); }
 }
