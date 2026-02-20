@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { parseMidiMessage } from "../lib/midi/MidiEngine";
 import { recognizeChord } from "../lib/midi/chordRecognizer";
 import { useMidiStore, addRecentEvent } from "../store/midiStore";
+import { usePatchStore } from "../store/patchStore";
 
 export interface MidiPort {
   id: string;
@@ -17,6 +18,8 @@ export function useMidi() {
 
   const { setInputPort, setConnected, noteOn, noteOff, setCCValue, setPitchBend, setCurrentChord, addSessionEvent } =
     useMidiStore();
+
+  const { setProgramChange, setBankSelect } = usePatchStore();
 
   const refreshPorts = (access: MIDIAccess) => {
     const ports: MidiPort[] = [];
@@ -87,9 +90,14 @@ export function useMidi() {
           break;
         case "controlChange":
           setCCValue(parsed.controller!, parsed.value!, parsed.timestamp);
+          // CC0 = Bank Select MSB
+          if (parsed.controller === 0) setBankSelect(parsed.value!);
           break;
         case "pitchBend":
           setPitchBend(parsed.bend!);
+          break;
+        case "programChange":
+          setProgramChange(parsed.program!);
           break;
       }
 

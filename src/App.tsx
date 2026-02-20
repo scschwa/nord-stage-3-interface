@@ -6,11 +6,13 @@ import { PatchPanel } from "./components/patchviewer/PatchPanel";
 import { AiAssistant } from "./components/ai/AiAssistant";
 import { MidiMonitor } from "./components/midi/MidiMonitor";
 import { useMidi } from "./hooks/useMidi";
+import { useSidecar } from "./hooks/useSidecar";
 import "./App.css";
 
 export default function App() {
   const [activeTab, setActiveTab] = useState("visualizer");
   const { inputPorts, connectToPort, disconnect, error } = useMidi();
+  useSidecar(); // start the Python sidecar on app launch
 
   return (
     <div className="app">

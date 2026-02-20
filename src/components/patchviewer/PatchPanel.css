@@ -1,0 +1,392 @@
+/* ── Patch Panel Root ─────────────────────────────────────────────────────── */
+.patch-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #0e0e0e;
+  color: #e0e0e0;
+  font-family: inherit;
+}
+
+/* ── Toolbar / Header ─────────────────────────────────────────────────────── */
+.patch-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  background: #1a1a1a;
+  border-bottom: 1px solid #2a2a2a;
+  flex-shrink: 0;
+}
+
+.patch-load-btn {
+  background: #c8102e;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s;
+}
+.patch-load-btn:hover { background: #e01535; }
+.patch-load-btn:disabled { background: #444; cursor: not-allowed; }
+
+.patch-name {
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.patch-meta {
+  font-size: 12px;
+  color: #888;
+  white-space: nowrap;
+}
+
+.sidecar-badge {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: #1f1f1f;
+}
+.sidecar-badge.ready { color: #4caf50; }
+.sidecar-badge.starting { color: #ff9800; }
+.sidecar-badge.error { color: #f44336; }
+
+.sidecar-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+.sidecar-badge.ready .sidecar-dot { background: #4caf50; }
+.sidecar-badge.starting .sidecar-dot { background: #ff9800; animation: blink 1s infinite; }
+.sidecar-badge.error .sidecar-dot { background: #f44336; }
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.2; }
+}
+
+/* ── Program Change indicator ─────────────────────────────────────────────── */
+.program-change-bar {
+  padding: 5px 16px;
+  background: #141414;
+  border-bottom: 1px solid #222;
+  font-size: 12px;
+  color: #666;
+  flex-shrink: 0;
+}
+.program-change-bar span { color: #aaa; margin-left: 6px; }
+
+/* ── Section tabs ─────────────────────────────────────────────────────────── */
+.patch-tabs {
+  display: flex;
+  gap: 2px;
+  padding: 8px 16px 0;
+  background: #141414;
+  border-bottom: 1px solid #222;
+  flex-shrink: 0;
+}
+
+.patch-tab {
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: #888;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 6px 14px;
+  cursor: pointer;
+  border-radius: 4px 4px 0 0;
+  transition: color 0.15s, border-color 0.15s;
+}
+.patch-tab:hover { color: #ccc; }
+.patch-tab.active { color: #fff; border-bottom-color: #c8102e; }
+.patch-tab.enabled-indicator { position: relative; }
+.patch-tab.enabled-indicator::after {
+  content: '';
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #4caf50;
+}
+
+/* ── Section content area ─────────────────────────────────────────────────── */
+.patch-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  min-height: 0;
+}
+
+/* ── Placeholder states ───────────────────────────────────────────────────── */
+.patch-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 10px;
+  color: #555;
+  text-align: center;
+  padding: 40px;
+}
+.patch-placeholder .ph-icon { font-size: 48px; opacity: 0.3; }
+.patch-placeholder h3 { color: #888; margin: 0; }
+.patch-placeholder p { margin: 0; font-size: 13px; color: #555; max-width: 360px; line-height: 1.5; }
+
+/* ── Parameter grid ───────────────────────────────────────────────────────── */
+.param-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.param-card {
+  background: #1a1a1a;
+  border: 1px solid #252525;
+  border-radius: 6px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.param-label {
+  font-size: 11px;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.param-value {
+  font-size: 15px;
+  font-weight: 600;
+  color: #e0e0e0;
+}
+
+.param-value.enabled { color: #4caf50; }
+.param-value.disabled { color: #555; }
+
+/* ── Drawbar display ──────────────────────────────────────────────────────── */
+.drawbar-group {
+  background: #1a1a1a;
+  border: 1px solid #252525;
+  border-radius: 6px;
+  padding: 12px 14px;
+  margin-bottom: 10px;
+}
+
+.drawbar-title {
+  font-size: 11px;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 10px;
+}
+
+.drawbar-row {
+  display: flex;
+  gap: 6px;
+  align-items: flex-end;
+  height: 80px;
+}
+
+.drawbar-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  flex: 1;
+}
+
+.drawbar-slot {
+  width: 100%;
+  background: #0e0e0e;
+  border-radius: 3px;
+  position: relative;
+  height: 64px;
+  border: 1px solid #2a2a2a;
+  overflow: hidden;
+}
+
+.drawbar-fill {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #c8102e;
+  transition: height 0.2s;
+  border-radius: 2px;
+}
+
+.drawbar-label {
+  font-size: 9px;
+  color: #555;
+  text-align: center;
+}
+
+.drawbar-val {
+  font-size: 10px;
+  color: #aaa;
+  font-weight: 700;
+}
+
+/* ── Section heading ──────────────────────────────────────────────────────── */
+.section-heading {
+  font-size: 12px;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 16px 0 8px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #222;
+}
+.section-heading:first-child { margin-top: 0; }
+
+/* ── Boolean chips ────────────────────────────────────────────────────────── */
+.bool-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.bool-chip.on { background: #1b3d1f; color: #4caf50; }
+.bool-chip.off { background: #1f1f1f; color: #555; }
+
+/* ── Envelope display ─────────────────────────────────────────────────────── */
+.env-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  background: #1a1a1a;
+  border: 1px solid #252525;
+  border-radius: 6px;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+}
+
+/* ── Effects chain ────────────────────────────────────────────────────────── */
+.fx-chain {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.fx-block {
+  background: #1a1a1a;
+  border: 1px solid #252525;
+  border-radius: 6px;
+  padding: 10px 14px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 8px 16px;
+  align-items: start;
+}
+
+.fx-block.off { opacity: 0.45; }
+
+.fx-block-header {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.fx-block-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: #ccc;
+}
+
+.fx-type-badge {
+  background: #2a2a2a;
+  color: #aaa;
+  border-radius: 4px;
+  padding: 1px 6px;
+  font-size: 11px;
+}
+
+.fx-params {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.fx-param {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 70px;
+}
+
+.fx-param-label {
+  font-size: 10px;
+  color: #666;
+  text-transform: uppercase;
+}
+
+.fx-param-value {
+  font-size: 13px;
+  font-weight: 600;
+  color: #e0e0e0;
+}
+
+/* ── Bar (for rate/amount/etc) ────────────────────────────────────────────── */
+.mini-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.mini-bar-track {
+  flex: 1;
+  height: 4px;
+  background: #2a2a2a;
+  border-radius: 2px;
+  overflow: hidden;
+}
+.mini-bar-fill {
+  height: 100%;
+  background: #c8102e;
+  border-radius: 2px;
+  transition: width 0.2s;
+}
+.mini-bar-num {
+  font-size: 11px;
+  color: #888;
+  min-width: 28px;
+  text-align: right;
+}
+
+/* ── CC overlay badge ─────────────────────────────────────────────────────── */
+.cc-overlay {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  margin-left: 6px;
+  background: #1f2d1f;
+  color: #66bb6a;
+  border-radius: 3px;
+  padding: 0 5px;
+  font-size: 10px;
+  font-weight: 700;
+  vertical-align: middle;
+}
