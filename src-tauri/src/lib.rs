@@ -1,5 +1,7 @@
 // Nord Stage 3 Interface - Tauri backend
 
+mod ai_assistant;
+
 use std::process::{Child, Command};
 use std::sync::Mutex;
 use tauri::State;
@@ -9,23 +11,19 @@ use tauri_plugin_dialog::DialogExt;
 
 struct SidecarHandle(Mutex<Option<Child>>);
 
-/// Spawn the Python FastAPI sidecar on port 47821.
-/// No-ops if already running. Returns an error string if Python is not found.
 #[tauri::command]
 fn spawn_sidecar(state: State<'_, SidecarHandle>) -> Result<(), String> {
     let mut guard = state.0.lock().unwrap();
     if guard.is_some() {
-        return Ok(()); // already running
+        return Ok(());
     }
 
-    // Candidate Python executables in priority order
     let python_candidates = [
         r"C:\Users\svenftw\AppData\Local\Programs\Python\Python312\python.exe",
         "python3",
         "python",
     ];
 
-    // Script path relative to the repo root (works during `tauri dev`)
     let script = {
         let mut p = std::env::current_dir().unwrap_or_default();
         p.push("src-python");
@@ -43,11 +41,9 @@ fn spawn_sidecar(state: State<'_, SidecarHandle>) -> Result<(), String> {
         }
     }
 
-    Err("Could not find a Python executable to start the sidecar. \
-         Make sure Python 3.12 is installed.".into())
+    Err("Could not find a Python executable. Make sure Python 3.12 is installed.".into())
 }
 
-/// Kill the sidecar process if running.
 #[tauri::command]
 fn stop_sidecar(state: State<'_, SidecarHandle>) {
     let mut guard = state.0.lock().unwrap();
@@ -58,8 +54,6 @@ fn stop_sidecar(state: State<'_, SidecarHandle>) {
 
 // ── File dialog ────────────────────────────────────────────────────────────
 
-/// Open a native file-picker filtered to Nord patch files.
-/// Returns the selected absolute path, or null if cancelled.
 #[tauri::command]
 async fn pick_patch_file(app: tauri::AppHandle) -> Option<String> {
     app.dialog()
@@ -82,14 +76,12 @@ pub fn run() {
             spawn_sidecar,
             stop_sidecar,
             pick_patch_file,
+            // AI assistant
+            ai_assistant::get_api_key,
+            ai_assistant::set_api_key,
+            ai_assistant::delete_api_key,
+            ai_assistant::stream_ai_completion,
         ])
-        .on_window_event(|_window, event| {
-            // Kill sidecar when the last window closes
-            if let tauri::WindowEvent::Destroyed = event {
-                // We can't easily access State here; the OS will clean up child
-                // processes when the parent exits anyway on most platforms.
-            }
-        })
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

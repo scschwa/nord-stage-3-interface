@@ -24,3 +24,9 @@ tauri-plugin-midi = "0.1"
 tauri-plugin-dialog = "2"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
+# AI assistant: HTTP client with SSE streaming
+reqwest = { version = "0.12", features = ["json", "stream"] }
+# Async stream combinator for .next().await on byte streams
+futures-util = "0.3"
+# Secure API key storage via OS keychain (Windows Credential Manager)
+keyring = "3"
