@@ -11,6 +11,16 @@ use tauri_plugin_dialog::DialogExt;
 
 struct SidecarHandle(Mutex<Option<Child>>);
 
+impl Drop for SidecarHandle {
+    fn drop(&mut self) {
+        if let Ok(mut guard) = self.0.lock() {
+            if let Some(mut child) = guard.take() {
+                let _ = child.kill();
+            }
+        }
+    }
+}
+
 /// Spawn the Python sidecar. On Android this is a no-op (Python unavailable).
 #[tauri::command]
 fn spawn_sidecar(state: State<'_, SidecarHandle>) -> Result<(), String> {
