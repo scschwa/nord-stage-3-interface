@@ -1,23 +1,38 @@
 /**
- * Manages the Python sidecar lifecycle.
- * - On mount: calls spawn_sidecar (Tauri command) and polls /health
- * - Exposes sidecarReady + sidecarError from patchStore
- * - On unmount: does NOT stop the sidecar (let it persist for app lifetime)
+ * Manages the optional Python sidecar lifecycle.
  *
- * Mount this once at the App level.
+ * Since patch parsing now runs entirely in TypeScript (ns3fpParser.ts),
+ * the sidecar is no longer required for core functionality. It is started
+ * in the background on desktop platforms only; Android skips it entirely.
+ *
+ * Mount once at App level.
  */
 import { useEffect } from "react";
 import { invoke } from "@tauri-apps/api/core";
-import { usePatchStore, SIDECAR_URL } from "../store/patchStore";
+import { usePatchStore } from "../store/patchStore";
+import { parseNs3f } from "../lib/patch/ns3fpParser";
 
+const SIDECAR_URL      = "http://localhost:47821";
 const POLL_INTERVAL_MS = 500;
-const MAX_RETRIES = 20;
+const MAX_RETRIES      = 20;
+
+/** True when running inside a Tauri Android build. */
+function isAndroid(): boolean {
+  return /android/i.test(navigator.userAgent);
+}
 
 export function useSidecar() {
-  const { sidecarReady, sidecarError, setSidecarReady, setSidecarError } = usePatchStore();
+  const { setSidecarReady, setSidecarError } = usePatchStore();
 
   useEffect(() => {
-    let retries = 0;
+    // Patch parsing is now pure TypeScript — no sidecar needed.
+    // On Android there is no Python; mark ready immediately so the UI isn't blocked.
+    if (isAndroid()) {
+      setSidecarReady(true);
+      return;
+    }
+
+    let retries  = 0;
     let pollId: ReturnType<typeof setInterval> | null = null;
     let cancelled = false;
 
@@ -25,11 +40,9 @@ export function useSidecar() {
       try {
         await invoke("spawn_sidecar");
       } catch (err) {
-        // spawn_sidecar may return an error if already running — ignore
         console.warn("spawn_sidecar:", err);
       }
 
-      // Poll the health endpoint until ready
       pollId = setInterval(async () => {
         if (cancelled) return;
         retries++;
@@ -45,9 +58,8 @@ export function useSidecar() {
         }
         if (retries >= MAX_RETRIES) {
           clearInterval(pollId!);
-          setSidecarError(
-            "Python sidecar did not start in time. Patch loading unavailable."
-          );
+          // Non-fatal: patch loading works via TypeScript parser regardless.
+          setSidecarError("Python sidecar unavailable (patch loading still works).");
         }
       }, POLL_INTERVAL_MS);
     }
@@ -59,13 +71,10 @@ export function useSidecar() {
       if (pollId) clearInterval(pollId);
     };
   }, []);
-
-  return { sidecarReady, sidecarError };
 }
 
 /**
- * Load a patch file through the sidecar.
- * Calls Tauri pick_patch_file command (Rust native dialog), then POSTs to sidecar.
+ * Open a native file picker and return the selected path (or null).
  */
 export async function loadPatchFile(): Promise<string | null> {
   try {
@@ -76,15 +85,13 @@ export async function loadPatchFile(): Promise<string | null> {
   }
 }
 
+/**
+ * Parse a .ns3fp / .ns3f file using the pure-TypeScript parser.
+ * Rust handles ZIP extraction; TypeScript does the bit-level parsing.
+ * Works on desktop and Android — no Python sidecar required.
+ */
 export async function parsePatchFromPath(filePath: string) {
-  const res = await fetch(`${SIDECAR_URL}/parse-patch`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ file_path: filePath }),
-  });
-  if (!res.ok) {
-    const detail = await res.text();
-    throw new Error(detail || `HTTP ${res.status}`);
-  }
-  return res.json();
+  const bytes = await invoke<number[]>("read_patch_bytes", { path: filePath });
+  const filename = filePath.split(/[\\/]/).pop() ?? filePath;
+  return parseNs3f(new Uint8Array(bytes), filename);
 }

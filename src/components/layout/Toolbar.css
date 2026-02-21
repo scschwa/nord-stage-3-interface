@@ -56,3 +56,63 @@
 .toolbar-device {
   flex-shrink: 0;
 }
+
+/* ── Responsive toolbar ───────────────────────────────────────────────────── */
+
+/* Tablet: tighter padding, touch-friendly tabs */
+@media (max-width: 1280px) {
+  .toolbar {
+    padding: 0 12px;
+    gap: 8px;
+    height: 48px;
+  }
+
+  .tab-btn {
+    padding: 8px 10px;
+    font-size: 12px;
+    min-height: 36px;
+  }
+}
+
+/* Small tablet / landscape phone: hide brand subtitle, compact layout */
+@media (max-width: 900px) {
+  .toolbar {
+    padding: 0 8px;
+    gap: 4px;
+    height: 52px;
+  }
+
+  .brand-title {
+    display: none;
+  }
+
+  .toolbar-brand {
+    font-size: 17px; /* keep NORD logo visible */
+  }
+
+  .tab-btn {
+    padding: 10px 8px;
+    font-size: 11px;
+    border-radius: 3px;
+  }
+}
+
+/* Very small (phone portrait) — stack tabs */
+@media (max-width: 600px) {
+  .toolbar {
+    flex-wrap: wrap;
+    height: auto;
+    padding: 6px 8px;
+  }
+
+  .toolbar-tabs {
+    order: 3;
+    width: 100%;
+    overflow-x: auto;
+    padding-bottom: 2px;
+  }
+
+  .toolbar-device {
+    order: 2;
+  }
+}

@@ -376,6 +376,32 @@
   text-align: right;
 }
 
+/* ── Responsive / tablet ──────────────────────────────────────────────────── */
+
+@media (max-width: 1280px) {
+  .param-grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  }
+
+  .patch-tab {
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+}
+
+@media (pointer: coarse) {
+  .patch-load-btn {
+    min-height: 44px;
+    padding: 8px 18px;
+    font-size: 14px;
+  }
+
+  .patch-tab {
+    min-height: 40px;
+    padding: 10px 12px;
+  }
+}
+
 /* ── CC overlay badge ─────────────────────────────────────────────────────── */
 .cc-overlay {
   display: inline-flex;

@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(powershell.exe -NoProfile -Command \"& ''C:\\\\Users\\\\svenftw\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python312\\\\python.exe'' -c ''import fastapi; import uvicorn; import sys; sys.exit\\(0\\)''; echo $LASTEXITCODE\")"
+    ]
+  }
+}

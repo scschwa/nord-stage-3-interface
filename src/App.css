@@ -46,3 +46,32 @@ button {
 input, select {
   font-family: inherit;
 }
+
+/* ── Responsive / tablet (1280×800 landscape and below) ───────────────────── */
+
+/* Touch: increase tap target size for all interactive elements */
+@media (pointer: coarse) {
+  button, select {
+    min-height: 44px;
+  }
+
+  .app-content {
+    /* allow content to scroll if it overflows on small screens */
+    overflow-y: auto;
+  }
+}
+
+/* Tablet ≤ 1280px */
+@media (max-width: 1280px) {
+  .app-content {
+    font-size: 14px;
+  }
+}
+
+/* Small tablet / landscape phone ≤ 900px */
+@media (max-width: 900px) {
+  .midi-error {
+    font-size: 12px;
+    padding: 6px 12px;
+  }
+}
