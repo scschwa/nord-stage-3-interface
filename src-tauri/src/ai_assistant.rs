@@ -1,43 +1,63 @@
-// AI assistant: secure key storage + streaming Claude API calls
+// AI assistant: config-file key storage + streaming Claude API calls
 
 use futures_util::StreamExt;
 use serde::{Deserialize, Serialize};
-use tauri::Emitter;
+use std::path::PathBuf;
+use tauri::{Emitter, Manager};
 
-const SERVICE: &str = "nord-stage-3-ai";
-const CRED_USER: &str = "claude-api-key";
 const API_URL: &str = "https://api.anthropic.com/v1/messages";
+const CONFIG_FILE: &str = "config.json";
 
-// ── Keychain commands ───────────────────────────────────────────────────────
+// ── Config file helpers ──────────────────────────────────────────────────────
+
+fn config_path(app: &tauri::AppHandle) -> Result<PathBuf, String> {
+    let dir = app.path().app_data_dir().map_err(|e| e.to_string())?;
+    std::fs::create_dir_all(&dir).map_err(|e| e.to_string())?;
+    Ok(dir.join(CONFIG_FILE))
+}
+
+fn read_config(app: &tauri::AppHandle) -> serde_json::Value {
+    config_path(app)
+        .ok()
+        .and_then(|p| std::fs::read_to_string(p).ok())
+        .and_then(|s| serde_json::from_str(&s).ok())
+        .unwrap_or(serde_json::json!({}))
+}
+
+fn write_config(app: &tauri::AppHandle, config: &serde_json::Value) -> Result<(), String> {
+    let path = config_path(app)?;
+    let text = serde_json::to_string_pretty(config).map_err(|e| e.to_string())?;
+    std::fs::write(path, text).map_err(|e| e.to_string())
+}
+
+// ── Key commands ─────────────────────────────────────────────────────────────
 
 /// Read the stored API key (returns None if not set yet).
 #[tauri::command]
-pub fn get_api_key() -> Option<String> {
-    keyring::Entry::new(SERVICE, CRED_USER)
-        .ok()?
-        .get_password()
-        .ok()
+pub fn get_api_key(app: tauri::AppHandle) -> Option<String> {
+    let cfg = read_config(&app);
+    cfg["api_key"].as_str().map(|s| s.to_string())
 }
 
-/// Store the API key in the OS keychain.
+/// Store the API key in the app config file.
 #[tauri::command]
-pub fn set_api_key(key: String) -> Result<(), String> {
-    keyring::Entry::new(SERVICE, CRED_USER)
-        .map_err(|e| e.to_string())?
-        .set_password(&key)
-        .map_err(|e| e.to_string())
+pub fn set_api_key(app: tauri::AppHandle, key: String) -> Result<(), String> {
+    let mut cfg = read_config(&app);
+    cfg["api_key"] = serde_json::Value::String(key);
+    write_config(&app, &cfg)
 }
 
 /// Remove the stored API key.
 #[tauri::command]
-pub fn delete_api_key() -> Result<(), String> {
-    keyring::Entry::new(SERVICE, CRED_USER)
-        .map_err(|e| e.to_string())?
-        .delete_credential()
-        .map_err(|e| e.to_string())
+pub fn delete_api_key(app: tauri::AppHandle) -> Result<(), String> {
+    let mut cfg = read_config(&app);
+    if let Some(obj) = cfg.as_object_mut() {
+        obj.remove("api_key");
+    }
+    write_config(&app, &cfg)
 }
 
-// ── Streaming completion ────────────────────────────────────────────────────
+// ── Streaming completion ─────────────────────────────────────────────────────
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct ChatMessage {
@@ -77,13 +97,16 @@ pub async fn stream_ai_completion(
     messages: Vec<ChatMessage>,
     message_id: String,
 ) -> Result<(), String> {
-    // Load key from OS keychain
-    let api_key = keyring::Entry::new(SERVICE, CRED_USER)
-        .map_err(|e| e.to_string())?
-        .get_password()
-        .map_err(|_| {
-            "No API key found. Please enter your Anthropic API key in ⚙ Settings.".to_string()
-        })?;
+    // Load key from config file
+    let api_key = {
+        let cfg = read_config(&app);
+        cfg["api_key"]
+            .as_str()
+            .ok_or_else(|| {
+                "No API key found. Please enter your Anthropic API key in ⚙ Settings.".to_string()
+            })?
+            .to_string()
+    };
 
     let body = serde_json::json!({
         "model": model,

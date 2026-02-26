@@ -15,7 +15,21 @@
       "Bash(\"C:\\\\Users\\\\svenftw\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python312\\\\Scripts\\\\pyinstaller.exe\" --onefile --noconsole --name NordLauncher --distpath dist-launcher --workpath \"C:\\\\Users\\\\svenftw\\\\AppData\\\\Local\\\\Temp\\\\nord-launcher-build\" --specpath \"C:\\\\Users\\\\svenftw\\\\AppData\\\\Local\\\\Temp\\\\nord-launcher-build\" launcher.py)",
       "Bash(\"C:\\\\Users\\\\svenftw\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python312\\\\Scripts\\\\pyinstaller.exe\" --onefile --noconsole --name NordLauncher --distpath dist-launcher --workpath \"C:/Users/svenftw/AppData/Local/Temp/nord-launcher-build\" --specpath \"C:/Users/svenftw/AppData/Local/Temp/nord-launcher-build\" launcher.py)",
       "Bash(Get-Item \"C:\\\\Users\\\\svenftw\\\\OneDrive\\\\nord-stage-3-interface\\\\dist-launcher\\\\NordLauncher.exe\")",
-      "Bash(Select-Object Name, Length, LastWriteTime)"
+      "Bash(Select-Object Name, Length, LastWriteTime)",
+      "Bash(powershell.exe -NoProfile -Command \"& { cd ''C:\\\\Users\\\\svenftw\\\\OneDrive\\\\nord-stage-3-interface''; & ''C:\\\\Users\\\\svenftw\\\\.cargo\\\\bin\\\\cargo.exe'' build --manifest-path src-tauri/Cargo.toml 2>&1 }\")",
+      "Bash(powershell.exe -NoProfile -Command \"& { cd ''C:\\\\Users\\\\svenftw\\\\OneDrive\\\\nord-stage-3-interface''; & npm.cmd run tauri build 2>&1 }\")",
+      "Bash(xargs ls -la)",
+      "Bash(wc -l /c/Users/svenftw/OneDrive/nord-stage-3-interface/src/**/*.tsx /c/Users/svenftw/OneDrive/nord-stage-3-interface/src/**/*.ts)",
+      "Bash(xargs wc -l)",
+      "Bash(git log --shortstat --format=\"\")",
+      "Read(//c/Users/svenftw/OneDrive/nord-stage-3-interface/**)",
+      "Bash(python3 -c \"import json,sys; p=json.load\\(sys.stdin\\); deps=list\\(p.get\\(''dependencies'',{}\\).keys\\(\\)\\); devDeps=list\\(p.get\\(''devDependencies'',{}\\).keys\\(\\)\\); print\\(''Runtime deps:'', len\\(deps\\)\\); [print\\('' -'', d\\) for d in deps]; print\\(''Dev deps:'', len\\(devDeps\\)\\); [print\\('' -'', d\\) for d in devDeps]\")",
+      "Bash(node -e \"const p=require\\(''./package.json''\\); const deps=Object.keys\\(p.dependencies||{}\\); const dev=Object.keys\\(p.devDependencies||{}\\); console.log\\(''Runtime deps:'', deps.length\\); deps.forEach\\(d=>console.log\\('' -'',d\\)\\); console.log\\(''Dev deps:'', dev.length\\); dev.forEach\\(d=>console.log\\('' -'',d\\)\\);\")",
+      "Bash(ls -la /c/Users/svenftw/OneDrive/nord-stage-3-interface/tmpclaude-*)"
+    ],
+    "additionalDirectories": [
+      "C:\\Users\\svenftw\\.claude\\skills\\stats",
+      "C:\\Users\\svenftw\\.claude\\skills\\plan"
     ]
   }
 }

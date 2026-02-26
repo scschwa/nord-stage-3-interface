@@ -28,7 +28,5 @@ serde_json = "1"
 reqwest = { version = "0.12", features = ["json", "stream"] }
 # Async stream combinator for .next().await on byte streams
 futures-util = "0.3"
-# Secure API key storage via OS keychain (Windows Credential Manager)
-keyring = "3"
 # ZIP extraction for .ns3fp patch files (Android-compatible, no sidecar needed)
 zip = { version = "2", default-features = false, features = ["deflate"] }
